@@ -3,6 +3,8 @@
  * Copyright Gavin Shan, IBM Corporation 2016.
  */
 
+#define DEBUG 1
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -54,6 +56,8 @@ static void ncsi_report_link(struct ncsi_dev_priv *ndp, bool force_down)
 	struct ncsi_package *np;
 	struct ncsi_channel *nc;
 	unsigned long flags;
+
+	printk("%s\n", __func__);
 
 	nd->state = ncsi_dev_state_functional;
 	if (force_down) {
@@ -472,6 +476,8 @@ static void ncsi_suspend_channel(struct ncsi_dev_priv *ndp)
 	struct ncsi_cmd_arg nca;
 	unsigned long flags;
 	int ret;
+
+	printk("%s\n", __func__);
 
 	np = ndp->active_package;
 	nc = ndp->active_channel;
@@ -1301,6 +1307,8 @@ static int ncsi_choose_active_channel(struct ncsi_dev_priv *ndp)
 	} else if (!found) {
 		netdev_warn(ndp->ndev.dev,
 			    "NCSI: No channel found to configure!\n");
+		netdev_warn(ndp->ndev.dev,
+			    "BLAH BLAH BLAH!!!!\n");
 		ncsi_report_link(ndp, true);
 		return -ENODEV;
 	}
@@ -1349,6 +1357,8 @@ static void ncsi_probe_channel(struct ncsi_dev_priv *ndp)
 	struct ncsi_cmd_arg nca;
 	unsigned char index;
 	int ret;
+
+	printk("%s\n", __func__);
 
 	nca.ndp = ndp;
 	nca.req_flags = NCSI_REQ_FLAG_EVENT_DRIVEN;
@@ -1526,6 +1536,8 @@ static void ncsi_dev_work(struct work_struct *work)
 	struct ncsi_dev_priv *ndp = container_of(work,
 			struct ncsi_dev_priv, work);
 	struct ncsi_dev *nd = &ndp->ndev;
+
+	printk("%s\n", __func__);
 
 	switch (nd->state & ncsi_dev_state_major) {
 	case ncsi_dev_state_probe:
@@ -1751,6 +1763,8 @@ struct ncsi_dev *ncsi_register_dev(struct net_device *dev,
 	unsigned long flags;
 	int i;
 
+	printk("%s\n", __func__);
+
 	/* Check if the device has been registered or not */
 	nd = ncsi_find_dev(dev);
 	if (nd)
@@ -1806,6 +1820,8 @@ EXPORT_SYMBOL_GPL(ncsi_register_dev);
 int ncsi_start_dev(struct ncsi_dev *nd)
 {
 	struct ncsi_dev_priv *ndp = TO_NCSI_DEV_PRIV(nd);
+
+	printk("%s\n", __func__);
 
 	if (nd->state != ncsi_dev_state_registered &&
 	    nd->state != ncsi_dev_state_functional)

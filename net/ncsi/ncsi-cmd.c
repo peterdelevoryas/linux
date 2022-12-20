@@ -380,6 +380,10 @@ int ncsi_xmit_cmd(struct ncsi_cmd_arg *nca)
 	eth_broadcast_addr(eh->h_dest);
 	memcpy(eh->h_source, nca->ndp->ndev.dev->dev_addr, ETH_ALEN);
 
+	printk("NCSI: CMD: %pM %pM 0x%02x id %u package %u channel %u\n",
+		eh->h_source, eh->h_dest, nca->type, nca->id, nca->package,
+		nca->channel);
+
 	/* Start the timer for the request that might not have
 	 * corresponding response. Given NCSI is an internal
 	 * connection a 1 second delay should be sufficient.
